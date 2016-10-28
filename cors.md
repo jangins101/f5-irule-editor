@@ -24,9 +24,15 @@ sys httpd {
 
 ##### Use TMSH to interactively edit
 
+Edit the httpd properties with the following command (from the `tmsh` shell)
+```
+edit sys httpd all-properties
+```
+
 Paste the code into the ssl-include section of the httpd properties
 
 ```
+
 Header always set Access-Control-Allow-Origin "https://honeyb.io"
 Header always add Access-Control-Allow-Headers "origin, x-requested-with, content-type, Authorization"
 Header always add Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
@@ -34,11 +40,7 @@ RewriteEngine On
 RewriteCond %{REQUEST_METHOD} OPTIONS
 RewriteRule ^(.*)$ $1 [R=200,L]
 ```
-```                  
-[root@bigip:Active:Standalone] config # tmsh
-root@(bigip)(cfg-sync Standalone)(Active)(/Common)(tmos)# edit sys httpd all-properties
-Save changes? (y/n/e) y
-```                  
+
 
 #### Option 2 - Use a Virtual Server
 As the BIG-IP is a powerful proxy, you can add headers and return responses by utilizing an iRule applied on top of your management connection. This is a little bit tricky as you need to have a virtual server that targets the devices management or self-ip as its pool member, and we've found depending on version we're able to get this working or not. You can't use the loopback address as the pool member, so you'll need to either use a second BIG-IP, or route the traffic out a self-ip, and back in the management network's routing.
